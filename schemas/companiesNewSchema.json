@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "additionalProperties": true,
+  "required": [
+      "handle",
+      "name",
+      "num_employees"
+  ],
+  "properties": {
+      "handle": {
+          "$id": "#/properties/handle",
+          "type": "string",
+          "title": "The Handle Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "testhandle1"
+          ]
+      },
+      "name": {
+          "$id": "#/properties/name",
+          "type": "string",
+          "title": "The Name Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "apple"
+          ]
+      },
+      "num_employees": {
+          "$id": "#/properties/num_employees",
+          "type": "integer",
+          "title": "The Num_employees Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0,
+          "examples": [
+              100.0
+          ]
+      },
+      "description": {
+          "$id": "#/properties/description",
+          "type": "string",
+          "title": "The Description Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "hello"
+          ]
+      },
+      "logo_url": {
+          "$id": "#/properties/logo_url",
+          "type": "string",
+          "title": "The Logo_url Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "www.rithmschool.com"
+          ]
+      }
+  }
+}
