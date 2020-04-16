@@ -14,8 +14,7 @@ describe("partialUpdate()", () => {
       )
 
     expect(query).toEqual(
-      `UPDATE companies SET name=$1 WHERE handle=$2 RETURNING *`,
-      ["Rithm School", "testhandle"]
+      `UPDATE companies SET name=$1 WHERE handle=$2 RETURNING *`
     )
     expect(values).toEqual(
       ["Rithm School","testhandle"]

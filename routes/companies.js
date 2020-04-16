@@ -4,6 +4,7 @@ const Company = require('../models/company');
 
 const { validate } = require("jsonschema");
 const companiesNewSchema = require("../schemas/companiesNewSchema");
+const companiesUpdateSchema = require("../schemas/companiesUpdateSchema");
 
 const ExpressError = require("../helpers/expressError");
 
@@ -27,26 +28,86 @@ router.get('/', async function (req, res, next) {
   }
 })
 
-  /**POST /companies
-    This should create a new company and return the newly created company.
-    This should return JSON of {company: companyData}
-  */
+/**POST /companies
+  This should create a new company and return the newly created company.
+  This should return JSON of {company: companyData}
+*/
 
-  router.post('/', async function (req, res, next){
-    try{
-      const validation = validate(req.body, companiesNewSchema);
+router.post('/', async function (req, res, next){
+  try{
+    const validation = validate(req.body, companiesNewSchema);
 
-      if(!validation.valid){
-        throw new ExpressError(validation.errors.map(e => e.stack), 400);
-      }
-
-      const company = await Company.createCompany(req.body);
-
-      return res.status(201).json({company});
-    } catch(err){
-      return next(err);
+    if(!validation.valid){
+      throw new ExpressError(validation.errors.map(e => e.stack), 400);
     }
-  })
+
+    const company = await Company.createCompany(req.body);
+
+    return res.status(201).json({company});
+  } catch(err){
+    return next(err);
+  }
+})
+
+/**GET /:handle
+ 
+This should return a single company found by its id.
+This should return JSON of {company: companyData} 
+
+*/
+router.get('/:handle', async function (req, res, next) {
+  try{
+
+    const companyHandle = req.params.handle;
+
+    const company = await Company.getCompany(companyHandle);
+
+    return res.json({ company });
+
+  } catch(err){
+    next(err);
+  }
+});
+
+/*PATCH /:handle
+
+This should update an existing company and return the updated company.
+This should return JSON of {company: companyData} 
+*/
+router.patch('/:handle', async function(req, res, next){
+  try{
+    const validation = validate(req.body, companiesUpdateSchema);
+
+    if(!validation.valid){
+      throw new ExpressError(validation.errors.map(e => e.stack), 400);
+    }
+
+    const company = await Company.updateCompany(req.params.handle, req.body);
+
+    return res.json({ company });
+
+  }catch(err){
+    return next(err);
+  }
+});
+
+/*DELETE /:handle
+
+This should remove an existing company and return a message.
+This should return JSON of {message: "Company deleted"}
+*/
+router.delete('/:handle', async function(req, res, next){
+  try{
+    await Company.deleteCompany(req.params.handle);
+
+    return res.json({ message: "Company deleted" });
+  }catch(err){
+    return next(err);
+  }
+})
+
+
+
 
 
 

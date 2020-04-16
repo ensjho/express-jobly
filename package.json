@@ -1,7 +1,6 @@
 {
   "name": "express-jobly",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "node $(which jest) --runInBand",
@@ -21,5 +20,14 @@
     "morgan": "^1.10.0",
     "pg": "^8.0.2",
     "supertest": "^4.0.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Inhockorea/express-jobly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Inhockorea/express-jobly/issues"
+  },
+  "homepage": "https://github.com/Inhockorea/express-jobly#readme",
+  "description": ""
 }

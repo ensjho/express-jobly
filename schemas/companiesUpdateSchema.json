@@ -6,22 +6,13 @@
   "description": "The root schema comprises the entire JSON document.",
   "default": {},
   "additionalProperties": false,
-  "required": [
-      "handle",
-      "name",
-      "num_employees"
-  ],
+  "anyOf": [
+    {"required": ["name"]},
+    {"required": ["num_employees"]},
+    {"required": ["description"]},
+    {"required": ["logo_url"]}
+],
   "properties": {
-      "handle": {
-          "$id": "#/properties/handle",
-          "type": "string",
-          "title": "The Handle Schema",
-          "description": "An explanation about the purpose of this instance.",
-          "default": "",
-          "examples": [
-              "testhandle1"
-          ]
-      },
       "name": {
           "$id": "#/properties/name",
           "type": "string",
@@ -29,7 +20,7 @@
           "description": "An explanation about the purpose of this instance.",
           "default": "",
           "examples": [
-              "apple"
+              "twitter"
           ]
       },
       "num_employees": {
@@ -39,7 +30,7 @@
           "description": "An explanation about the purpose of this instance.",
           "default": 0,
           "examples": [
-              100.0
+              400.0
           ]
       },
       "description": {
@@ -49,7 +40,7 @@
           "description": "An explanation about the purpose of this instance.",
           "default": "",
           "examples": [
-              "hello"
+              "you can tweet!"
           ]
       },
       "logo_url": {
@@ -59,7 +50,7 @@
           "description": "An explanation about the purpose of this instance.",
           "default": "",
           "examples": [
-              "www.rithmschool.com"
+              "www.twitter.com"
           ]
       }
   }
