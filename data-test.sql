@@ -10,11 +10,12 @@ CREATE TABLE companies (
     logo_url text
 );
 
-INSERT INTO companies (
-              handle,
-              name,
-              num_employees,
-              description,
-              logo_url
-            )       
-    VALUES ('testhandle', 'Apple', '100','Hello','www.com');
+CREATE TABLE jobs (
+    id SERIAL PRIMARY KEY,
+    title text NOT NULL,
+    salary float NOT NULL,
+    equity float NOT NULL,
+    company_handle text NOT NULL REFERENCES companies ON DELETE CASCADE,
+    date_posted timestamp with time zone DEFAULT current_timestamp,
+    CHECK (equity <= 1)
+);

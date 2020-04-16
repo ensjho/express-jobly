@@ -59,15 +59,15 @@ describe("company Routes Test", function () {
       });
     });
 
-    // TODO: test where min is greater than max
+    // Test where min is greater than max
     /* get company with wrong query string parameters respond with query string 400*/
     test("Wrong query string parameters", async function(){
-      const response = await request(app).get('/companies?pancakes=bean');
+      const response = await request(app).get('/companies?min_employees=700&max_employees=300');
 
       expect(response.statusCode).toBe(400);
       expect(response.body).toEqual({
         "status": 400,
-        "message": "Wrong query string parameters"
+        "message": "max employees CAN NOT be greater than min employees"
       });
     });
 
@@ -129,10 +129,10 @@ describe("company Routes Test", function () {
           num_employees: 350
         });
 
-      // TODO: should be a 400
-      expect(response.statusCode).toBe(500);
+      expect(response.statusCode).toBe(400);
       expect(response.body).toEqual({
-        "message": "duplicate key value violates unique constraint \"companies_pkey\""
+        "status": 400,
+        "message": "Handle or name already exists!"
       });
     });
   });
@@ -157,10 +157,6 @@ describe("company Routes Test", function () {
         .send({handle: 'Genna'});
 
       expect(response.statusCode).toBe(400);
-      expect(response.body).toEqual({
-        "status": 400,
-        "message": "Cannot change handle"
-      });
     });
 
   });

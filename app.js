@@ -16,8 +16,10 @@ app.use(morgan("tiny"));
 /** routes */
 
 const companyRoutes = require("./routes/companies");
+const jobRoutes = require("./routes/jobs")
 
 app.use("/companies", companyRoutes);
+app.use("/jobs", jobRoutes);
 
 /** 404 handler */
 
@@ -32,7 +34,7 @@ app.use(function(req, res, next) {
 
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  console.error(err.stack);
+  // console.error(err.stack);
 
   return res.json({
     status: err.status,

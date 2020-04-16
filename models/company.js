@@ -13,7 +13,7 @@ class Company {
    * of each company based on the query strings if provided.
    * Example: [
     {
-      "handle": "testhandle1",
+      "handle": "",
       "name": "apple"
     },
     {
@@ -23,7 +23,6 @@ class Company {
   ]
    */
 
-  // TODO: add comments
   static async getCompanies(searchQuery){
 
     const baseString = `
@@ -35,6 +34,7 @@ class Company {
     let sqlProtect = [];
     let idx = 1;
 
+    // if search query parameter do exist, add an additional SQL string to the base Query
     if (searchQuery.search){
       let search = `name like $${idx}`;
       idx++;
@@ -44,6 +44,7 @@ class Company {
       sqlProtect.push(sqlParam);
     }
 
+    // if min_employees query parameter do exist, add an additional SQL string to the base Query
     if (searchQuery.min_employees){
       let minQuery = (`num_employees > $${idx}`);
       idx++;
@@ -53,6 +54,7 @@ class Company {
       sqlProtect.push(sqlParam);
     }
 
+    // if max_employees query parameter do exist, add an additional SQL string to the base Query
     if (searchQuery.max_employees){
       let minQuery = (`num_employees < $${idx}`);
       idx++;
@@ -63,6 +65,7 @@ class Company {
     }
     let finalQuery;
 
+    // Only add WHERE in SQL statement if valid query parmeters do exist.
     if (baseQuery.length > 0){
       finalQuery = baseString + " WHERE " + baseQuery.join(" AND ");
     } else{
@@ -88,6 +91,18 @@ class Company {
   }
    */
   static async createCompany(companyData){
+
+    const test = await db.query(`
+                                  SELECT handle 
+                                  FROM companies
+                                  WHERE handle = $1 OR name = $2`, 
+                                  [companyData.handle, companyData.name]
+                                )
+
+    if (test.rows.length > 0){
+      throw new ExpressError("Handle or name already exists!", 400)
+    }
+
     const result = await db.query(`
                             INSERT INTO companies (handle, 
                                                    name,
@@ -111,37 +126,75 @@ class Company {
     return result.rows[0];
   }
 
-  /**Gets a single company
+  /**Gets a single company and all the jobs with matching company_handles
     returns company
     
     Example: 
     
     {
-    "handle": "twitter",
-    "name": "twitter",
-    "num_employees": 400,
-    "description": "you can tweet!",
-    "logo_url": "www.twitter.com"
-  }
+    "handle": "testhandle1",
+    "name": "apple",
+    "num_employees": 600,
+    "description": "Hello",
+    "logo_url": "www.com",
+      "jobs": [
+        {
+          "id": 1,
+          "title": "testjob1",
+          "salary": 100,
+          "equity": 0.3,
+          "date_posted": "2020-04-16T17:40:55.362Z"
+        }
+      ]
+    }
    */
 
   static async getCompany(handle){
     let result = await db.query(`
                           SELECT 
-                            handle, 
-                            name, 
-                            num_employees, 
-                            description, 
-                            logo_url
-                          FROM companies
-                          WHERE handle = $1`, 
+                            c.handle, 
+                            c.name, 
+                            c.num_employees, 
+                            c.description, 
+                            c.logo_url,
+                            j.id,
+                            j.title,
+                            j.salary,
+                            j.equity,
+                            j.date_posted
+
+                          FROM companies as c
+                            JOIN jobs AS j ON j.company_handle = c.handle
+                            WHERE handle = $1
+                            `, 
                           [handle]
                           );
 
     if(result.rows.length === 0){
       throw new ExpressError(`There is no company with that handle: ${handle}`, 404);
     }
-    return result.rows[0];
+
+    let jobs = result.rows.map(job => {
+
+      return {
+        id: job.id,
+        title: job.title,
+        salary: job.salary,
+        equity: job.equity,
+        date_posted: job.date_posted
+      }
+    });
+
+    const company = { handle: result.rows[0].handle, 
+                      name: result.rows[0].name,
+                      num_employees: result.rows[0].num_employees,
+                      description: result.rows[0].description,
+                      logo_url: result.rows[0].logo_url};
+
+    
+    company.jobs = jobs
+
+    return company
   }
 
   /**Updates a single company 
@@ -163,18 +216,18 @@ class Company {
     const result = await db.query(query, values);
 
     if(result.rows.length === 0){
-      throw new ExpressError(`There is no company with that ${handle}`, 404);
+      throw new ExpressError(`There is no company with that handle: ${handle}`, 404);
     }
+    
     return result.rows[0];
   }
 
 /**Deletes a single company*/
   static async deleteCompany(handle){
-    let result = await db.query(`
-                          DELETE FROM companies
-                          WHERE handle = $1 
-                          RETURNING handle`,
-                          [handle]);
+    await db.query(`DELETE FROM companies
+                    WHERE handle = $1 
+                    RETURNING handle`,
+                    [handle]);
   }
 }
 

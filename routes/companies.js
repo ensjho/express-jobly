@@ -51,8 +51,8 @@ router.post('/', async function (req, res, next){
 
 /**GET /:handle
  
-This should return a single company found by its id.
-This should return JSON of {company: companyData} 
+This should return a single company found by its id and all the jobs with the same company_handle.
+This should return JSON of {company: {...companyData, jobs: [job, ...]}};
 
 */
 router.get('/:handle', async function (req, res, next) {
