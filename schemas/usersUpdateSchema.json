@@ -6,10 +6,13 @@
   "description": "The root schema comprises the entire JSON document.",
   "default": {},
   "additionalProperties": false,
-  "required": [
-      "handle",
-      "name",
-      "num_employees"
+  "anyOf": [
+    {"required": ["password"]},
+    {"required": ["first_name"]},
+    {"required": ["last_name"]},
+    {"required": ["email"]},
+    {"required": ["photo_url"]},
+    {"required": ["_token"]}
   ],
   "properties": {
     "_token": {
@@ -22,54 +25,54 @@
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVyaWNqIiwiaWF0IjoxNTg3MTQ4ODE1fQ.Muhq2szybhk5bRntr1yNvJg_CZvH2jv5hkfwLp0kR5w"
         ]
     },
-      "handle": {
-          "$id": "#/properties/handle",
+      "password": {
+          "$id": "#/properties/password",
           "type": "string",
-          "title": "The Handle Schema",
+          "title": "The Password Schema",
           "description": "An explanation about the purpose of this instance.",
           "default": "",
           "examples": [
-              "testhandle1"
+              "password"
           ]
       },
-      "name": {
-          "$id": "#/properties/name",
+      "first_name": {
+          "$id": "#/properties/first_name",
           "type": "string",
-          "title": "The Name Schema",
+          "title": "The First_name Schema",
           "description": "An explanation about the purpose of this instance.",
           "default": "",
           "examples": [
-              "apple"
+              "genna"
           ]
       },
-      "num_employees": {
-          "$id": "#/properties/num_employees",
-          "type": "integer",
-          "title": "The Num_employees Schema",
-          "description": "An explanation about the purpose of this instance.",
-          "default": 0,
-          "examples": [
-              100.0
-          ]
-      },
-      "description": {
-          "$id": "#/properties/description",
+      "last_name": {
+          "$id": "#/properties/last_name",
           "type": "string",
-          "title": "The Description Schema",
+          "title": "The Last_name Schema",
           "description": "An explanation about the purpose of this instance.",
           "default": "",
           "examples": [
-              "hello"
+              "mer"
           ]
       },
-      "logo_url": {
-          "$id": "#/properties/logo_url",
+      "email": {
+          "$id": "#/properties/email",
           "type": "string",
-          "title": "The Logo_url Schema",
+          "title": "The Email Schema",
           "description": "An explanation about the purpose of this instance.",
           "default": "",
           "examples": [
-              "www.rithmschool.com"
+              "test@user.com"
+          ]
+      },
+      "photo_url": {
+          "$id": "#/properties/photo_url",
+          "type": "string",
+          "title": "The Photo_url Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "www.google.com"
           ]
       }
   }

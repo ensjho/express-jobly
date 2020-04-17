@@ -1,6 +1,8 @@
 \c jobly-test
 
 DROP TABLE IF EXISTS companies;
+DROP TABLE IF EXISTS jobs;
+
 
 CREATE TABLE companies (
     handle text PRIMARY KEY,

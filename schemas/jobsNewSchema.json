@@ -13,6 +13,16 @@
         "company_handle"
     ],
     "properties": {
+        "_token": {
+            "$id": "#/properties/_token",
+            "type": "string",
+            "title": "The _token Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVyaWNqIiwiaWF0IjoxNTg3MTQ4ODE1fQ.Muhq2szybhk5bRntr1yNvJg_CZvH2jv5hkfwLp0kR5w"
+            ]
+        },
         "id": {
             "$id": "#/properties/id",
             "type": "integer",

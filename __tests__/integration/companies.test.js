@@ -84,7 +84,8 @@ describe("company Routes Test", function () {
           "name": "test name",
           "num_employees": 350,
           "description": "This is a test!",
-          "logo_url": "www.test.com"
+          "logo_url": "www.test.com",
+          "jobs": []
       });
     });
 

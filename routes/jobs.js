@@ -6,6 +6,8 @@ const { validate } = require("jsonschema");
 const jobsNewSchema = require("../schemas/jobsNewSchema");
 const jobsUpdateSchema = require("../schemas/jobsUpdateSchema");
 
+const { ensureLoggedIn, isAdmin } = require('../middleware/auth');
+
 const ExpressError = require("../helpers/expressError");
 
 /**POST /jobs
@@ -13,18 +15,18 @@ const ExpressError = require("../helpers/expressError");
   This should return JSON of {job: jobData}
 */
 
-router.post('/', async function (req, res, next){
-  try{
+router.post('/', isAdmin, async function (req, res, next) {
+  try {
 
     const validation = validate(req.body, jobsNewSchema);
 
-    if(!validation.valid){
+    if (!validation.valid) {
       throw new ExpressError(validation.errors.map(e => e.stack), 400);
     }
 
     const job = await Job.createJob(req.body);
-    return res.status(201).json({job});
-  } catch(err){
+    return res.status(201).json({ job });
+  } catch (err) {
     return next(err);
   }
 })
@@ -34,14 +36,14 @@ router.post('/', async function (req, res, next){
  * This should return JSON of {jobs: [jobData, ...]}
 */
 
-router.get('/', async function (req, res, next) {
-  try{
+router.get('/', ensureLoggedIn, async function (req, res, next) {
+  try {
     const searchQuery = req.query;
     const jobs = await Job.getJobs(searchQuery);
     return res.json({ jobs });
 
-  } catch(err){
-    next(err);
+  } catch (err) {
+    return next(err);
   }
 })
 
@@ -52,8 +54,8 @@ This should return a single job found by its id.
 This should return JSON of {job: jobData} 
 
 */
-router.get('/:id', async function (req, res, next) {
-  try{
+router.get('/:id', ensureLoggedIn, async function (req, res, next) {
+  try {
 
     const jobID = req.params.id;
 
@@ -61,8 +63,8 @@ router.get('/:id', async function (req, res, next) {
 
     return res.json({ job });
 
-  } catch(err){
-    next(err);
+  } catch (err) {
+    return next(err);
   }
 });
 
@@ -71,11 +73,11 @@ router.get('/:id', async function (req, res, next) {
 This should update an existing job and return the updated job.
 This should return JSON of {job: jobData} 
 */
-router.patch('/:id', async function(req, res, next){
-  try{
+router.patch('/:id', isAdmin, async function (req, res, next) {
+  try {
     const validation = validate(req.body, jobsUpdateSchema);
 
-    if(!validation.valid){
+    if (!validation.valid) {
       throw new ExpressError(validation.errors.map(e => e.stack), 400);
     }
 
@@ -83,7 +85,7 @@ router.patch('/:id', async function(req, res, next){
 
     return res.json({ job });
 
-  }catch(err){
+  } catch (err) {
     return next(err);
   }
 });
@@ -93,12 +95,12 @@ router.patch('/:id', async function(req, res, next){
 This should remove an existing job and return a message.
 This should return JSON of {message: "Job deleted"}
 */
-router.delete('/:id', async function(req, res, next){
-  try{
+router.delete('/:id', isAdmin, async function (req, res, next) {
+  try {
     await Job.deleteJob(req.params.id);
 
     return res.json({ message: "Job deleted" });
-  }catch(err){
+  } catch (err) {
     return next(err);
   }
 })

@@ -6,6 +6,8 @@ const { validate } = require("jsonschema");
 const companiesNewSchema = require("../schemas/companiesNewSchema");
 const companiesUpdateSchema = require("../schemas/companiesUpdateSchema");
 
+const { ensureLoggedIn, isAdmin } = require('../middleware/auth');
+
 const ExpressError = require("../helpers/expressError");
 
 /** GET /companies'
@@ -13,7 +15,7 @@ const ExpressError = require("../helpers/expressError");
  * This should return JSON of {companies: [companyData, ...]}
 */
 
-router.get('/', async function (req, res, next) {
+router.get('/', ensureLoggedIn, async function (req, res, next) {
   try{
     const searchQuery = req.query;
 
@@ -26,14 +28,14 @@ router.get('/', async function (req, res, next) {
   } catch(err){
     next(err);
   }
-})
+});
 
 /**POST /companies
   This should create a new company and return the newly created company.
   This should return JSON of {company: companyData}
 */
 
-router.post('/', async function (req, res, next){
+router.post('/', isAdmin, async function (req, res, next){
   try{
     const validation = validate(req.body, companiesNewSchema);
 
@@ -55,7 +57,7 @@ This should return a single company found by its id and all the jobs with the sa
 This should return JSON of {company: {...companyData, jobs: [job, ...]}};
 
 */
-router.get('/:handle', async function (req, res, next) {
+router.get('/:handle', ensureLoggedIn, async function (req, res, next) {
   try{
 
     const companyHandle = req.params.handle;
@@ -74,7 +76,7 @@ router.get('/:handle', async function (req, res, next) {
 This should update an existing company and return the updated company.
 This should return JSON of {company: companyData} 
 */
-router.patch('/:handle', async function(req, res, next){
+router.patch('/:handle', isAdmin, async function(req, res, next){
   try{
     const validation = validate(req.body, companiesUpdateSchema);
 
@@ -96,7 +98,7 @@ router.patch('/:handle', async function(req, res, next){
 This should remove an existing company and return a message.
 This should return JSON of {message: "Company deleted"}
 */
-router.delete('/:handle', async function(req, res, next){
+router.delete('/:handle', isAdmin, async function(req, res, next){
   try{
     await Company.deleteCompany(req.params.handle);
 

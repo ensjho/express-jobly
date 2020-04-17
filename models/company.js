@@ -164,7 +164,7 @@ class Company {
                             j.date_posted
 
                           FROM companies as c
-                            JOIN jobs AS j ON j.company_handle = c.handle
+                            LEFT JOIN jobs AS j ON j.company_handle = c.handle
                             WHERE handle = $1
                             `, 
                           [handle]
@@ -174,16 +174,21 @@ class Company {
       throw new ExpressError(`There is no company with that handle: ${handle}`, 404);
     }
 
-    let jobs = result.rows.map(job => {
+    let jobs;
+    if(result.rows[0].id === null){
+      jobs = [];
+    }else{
+      jobs = result.rows.map(job => {
 
-      return {
-        id: job.id,
-        title: job.title,
-        salary: job.salary,
-        equity: job.equity,
-        date_posted: job.date_posted
-      }
-    });
+        return {
+          id: job.id,
+          title: job.title,
+          salary: job.salary,
+          equity: job.equity,
+          date_posted: job.date_posted
+        }
+      });
+    }
 
     const company = { handle: result.rows[0].handle, 
                       name: result.rows[0].name,
